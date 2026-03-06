@@ -1,0 +1,28 @@
+# Template de configuração do Wings
+# Copie para o HOST em /etc/pterodactyl/config.yml (Linux) antes de subir o Wings.
+# No painel: Admin → Nodes → [seu node] → Configuration; copie o config ou use Generate Token.
+#
+# No painel: Admin → Nodes → seu node → Configuration → copie o config.yml
+# ou use as variáveis abaixo com os valores gerados no painel.
+
+api:
+  host: "https://painel.seudominio.com"
+  key: "ptla_xxxxxxxxxxxxxxxxxxxxxxxx"
+  ssl:
+    verify: true
+
+system:
+  token: "xxxxxxxxxxxxxxxxxxxxxxxx"
+  data: "/var/lib/pterodactyl/volumes"
+
+docker:
+  network:
+    name: "pterodactyl_nw"
+  container_pid_limit: 512
+
+allowed_origins:
+  - "https://painel.seudominio.com"
+
+debug: false
+tmpfs_size: 100
+app_name: "Pterodactyl"

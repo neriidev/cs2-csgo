@@ -1,0 +1,13 @@
+# Secrets e dados locais
+.env
+var/.env
+
+# Dados persistentes (grandes / sensíveis)
+db/
+proxy/
+backups/
+wings-data/
+wings-config/config.yml
+
+# Logs
+logs/*.log

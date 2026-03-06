@@ -1,0 +1,74 @@
+# Painel Pterodactyl + MariaDB + Redis
+# Primeira vez: copie .env.example para .env e preencha MYSQL_PASSWORD e MYSQL_ROOT_PASSWORD.
+# Depois: docker compose -f docker-compose-painel.yml up -d
+# (A imagem do painel é construída localmente com o cliente MySQL para o banco inicializar sozinho.)
+
+version: '3.8'
+
+networks:
+  pterodactyl_net:
+    name: pterodactyl_net
+    driver: bridge
+
+volumes:
+  panel_logs:
+
+services:
+  database:
+    image: mariadb:10.5
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./db:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: "panel"
+      MYSQL_USER: "pterodactyl"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD:?Defina MYSQL_PASSWORD no arquivo .env}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:?Defina MYSQL_ROOT_PASSWORD no arquivo .env}"
+    networks:
+      - pterodactyl_net
+
+  redis:
+    image: redis:alpine
+    restart: always
+    networks:
+      - pterodactyl_net
+
+  panel:
+    build:
+      context: ./panel
+      dockerfile: Dockerfile
+    image: pterodactyl-panel:local
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      database:
+        condition: service_started
+      redis:
+        condition: service_started
+    volumes:
+      - ./var/:/app/var/
+      - ./panel-patch/Server.php:/app/app/Models/Server.php
+      - ./nginx/:/etc/nginx/http.d/
+      - ./certs/:/etc/letsencrypt/
+      - panel_logs:/app/storage/logs
+    environment:
+      APP_DEBUG: "true"
+      APP_URL: "${APP_URL:-http://localhost}"
+      APP_TIMEZONE: "America/Sao_Paulo"
+      APP_SERVICE_AUTHOR: "${APP_SERVICE_AUTHOR:-admin@example.com}"
+      DB_HOST: "database"
+      DB_PORT: 3306
+      DB_DATABASE: "panel"
+      DB_USERNAME: "pterodactyl"
+      DB_PASSWORD: "${MYSQL_PASSWORD:?Defina MYSQL_PASSWORD no .env}"
+      CACHE_DRIVER: "redis"
+      SESSION_DRIVER: "redis"
+      QUEUE_CONNECTION: "redis"
+      REDIS_HOST: "redis"
+    networks:
+      - pterodactyl_net

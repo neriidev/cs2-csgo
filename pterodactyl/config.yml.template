@@ -1,0 +1,41 @@
+# Gerado automaticamente pelo docker-compose (wings-init).
+# O Wings envia ao painel: Authorization: Bearer TOKEN_ID.TOKEN (obrigatório os dois).
+# No painel: Admin → Nodes → [seu node] → Configuration → copie token_id e token.
+
+token_id: "${TOKEN_ID}"
+token: "${SYSTEM_TOKEN}"
+
+# URL do painel (o Wings usa a chave "remote" para a API; tem que ter http:// ou https://)
+remote: "${API_HOST}"
+
+# API_HOST tem que incluir http:// ou https:// (ex.: http://panel ou http://host.docker.internal)
+api:
+  host: "${API_HOST}"
+  key: "${API_KEY}"
+  ssl:
+    verify: false
+
+system:
+  token: "${SYSTEM_TOKEN}"
+  data: "/var/lib/pterodactyl/volumes"
+
+docker:
+  network:
+    name: "pterodactyl_nw"
+    # Não use "interface" no Windows (Wings pode não subir). Para "Pool overlaps" use default-address-pools no daemon.json.
+  container_pid_limit: 512
+
+# Opcional: evita problemas em init ao buscar servidores da API (manager.go)
+# timeout alto ajuda se o painel demorar a responder na primeira requisição
+remote_query:
+  timeout: 60
+  boot_servers_per_page: 50
+
+allowed_origins:
+  - "http://localhost"
+  - "http://host.docker.internal"
+
+# false = menos I/O e log (recomendado); true = debug para diagnosticar timeout
+debug: false
+tmpfs_size: 100
+app_name: "Pterodactyl"

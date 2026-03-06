@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  wings:
+    image: ghcr.io/pterodactyl/wings:latest
+    restart: always
+    # Essencial para que o Wings gerencie as portas dos jogos no IP da máquina
+    network_mode: host
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers:/var/lib/docker/containers
+      - /etc/pterodactyl:/etc/pterodactyl
+      - /var/lib/pterodactyl:/var/lib/pterodactyl
+      - /tmp/pterodactyl:/tmp/pterodactyl
+      - /dev/log:/dev/log
+    environment:
+      TZ: "America/Sao_Paulo"
+      WINGS_UID: 988
+      WINGS_GID: 988
+      # Ative o debug se for a primeira instalação para ver erros de conexão
+      WINGS_DEBUG: "false"

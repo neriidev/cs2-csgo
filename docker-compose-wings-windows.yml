@@ -1,0 +1,62 @@
+# Wings para Docker no Windows (modo bridge)
+# Não precisa subir o painel antes: o Wings usa rede própria. O painel conecta em host.docker.internal:8080.
+#
+# O compose gera o config só na primeira vez (se wings-config/config.yml não existir).
+# Para regerar o config: apague ou renomeie wings-config/config.yml e dê up de novo (com .env preenchido).
+# Opcional: no .env defina WINGS_API_HOST, WINGS_TOKEN_ID, WINGS_SYSTEM_TOKEN (do painel, aba Configuration do node).
+#
+# 1. docker compose -f docker-compose-wings-windows.yml up -d
+# 2. No painel: Admin → Nodes → Create Node → FQDN: host.docker.internal, Porta: 8080
+# 3. Se não usou .env: edite wings-config/config.yml (api.key e system.token) e: docker compose ... restart wings
+
+version: '3.8'
+
+networks:
+  wings_net:
+    driver: bridge
+
+services:
+  wings-init:
+    image: alpine:latest
+    container_name: wings-init
+    restart: "no"
+    env_file: .env
+    environment:
+      API_HOST: ${WINGS_API_HOST:-http://host.docker.internal}
+      API_KEY: ${WINGS_API_KEY:-ptla_COLE_SUA_NODE_API_KEY}
+      TOKEN_ID: ${WINGS_TOKEN_ID:-COLE_TOKEN_ID_DO_PAINEL}
+      SYSTEM_TOKEN: ${WINGS_SYSTEM_TOKEN:-COLE_SYSTEM_TOKEN_DO_PAINEL}
+    volumes:
+      - ./pterodactyl:/template:ro
+      - ./wings-config:/etc/pterodactyl
+# Não sobrescreve wings-config/config.yml se já existir (evita perder token_id ao dar up).
+    command: sh -c "if [ -f /etc/pterodactyl/config.yml ]; then echo 'wings-config/config.yml já existe, mantendo.'; exit 0; fi; export API_HOST=\"$${API_HOST:-http://host.docker.internal}\" && export API_KEY=\"$${API_KEY:-ptla_COLE}\" && export TOKEN_ID=\"$${TOKEN_ID:-COLE_TOKEN_ID}\" && export SYSTEM_TOKEN=\"$${SYSTEM_TOKEN:-COLE_SYSTEM_TOKEN}\" && apk add --no-cache gettext && mkdir -p /etc/pterodactyl && envsubst < /template/config.yml.template > /etc/pterodactyl/config.yml && echo 'Config gerado.'"
+    networks:
+      - wings_net
+
+  wings:
+    image: ghcr.io/pterodactyl/wings:latest
+    container_name: wings
+    restart: always
+    depends_on:
+      wings-init:
+        condition: service_completed_successfully
+    # Sem network_mode: host para funcionar no Docker Desktop (Windows)
+    ports:
+      - "8080:8080"
+      - "2022:2022"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./wings-config:/etc/pterodactyl
+      # Usar path do host do Docker para o daemon encontrar ao criar containers dos servidores (evita "bind source path does not exist")
+      - /var/lib/pterodactyl/volumes:/var/lib/pterodactyl/volumes
+      - /run/wings/machine-id:/run/wings/machine-id
+      # /tmp/pterodactyl tem de existir no host do Docker (WSL2). Crie com: wsl -e sh -c "mkdir -p /tmp/pterodactyl"
+      - /tmp/pterodactyl:/tmp/pterodactyl
+    environment:
+      TZ: "America/Sao_Paulo"
+      WINGS_UID: 988
+      WINGS_GID: 988
+      WINGS_DEBUG: "false"
+    networks:
+      - wings_net

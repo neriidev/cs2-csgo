@@ -1,0 +1,26 @@
+# Nginx Proxy Manager - Fase 3 (produção)
+# Antes: docker network create proxy_net
+# Uso: docker compose -f docker-compose-proxy.yml up -d
+# Admin NPM: http://SEU_IP:81 (login: admin@example.com / changeme)
+
+version: '3.8'
+
+networks:
+  proxy_net:
+    external: true
+
+services:
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    restart: always
+    ports:
+      - "80:80"    # HTTP
+      - "443:443"  # HTTPS
+      - "81:81"    # Interface admin
+    volumes:
+      - ./proxy/data:/data
+      - ./proxy/letsencrypt:/etc/letsencrypt
+    environment:
+      TZ: "America/Sao_Paulo"
+    networks:
+      - proxy_net

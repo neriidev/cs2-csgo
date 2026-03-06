@@ -1,0 +1,27 @@
+# Override: Wings na rede do painel (api.host = http://panel)
+# Use quando o painel já estiver no ar para comunicação direta e menos timeout.
+#
+# 1. docker compose -f docker-compose-painel.yml up -d
+# 2. No .env: WINGS_API_HOST=http://panel
+# 3. docker compose -f docker-compose-wings-windows.yml -f docker-compose-wings-windows-internal.yml up -d
+# 4. docker compose -f ... -f docker-compose-wings-windows-internal.yml up -d --force-recreate wings-init
+# 5. docker compose -f ... -f docker-compose-wings-windows-internal.yml restart wings
+#
+# O node no painel: use FQDN **wings** e porta 8080 (o painel acessa o daemon direto na rede interna).
+
+version: '3.8'
+
+networks:
+  wings_net:
+    external: false
+  pterodactyl_net:
+    external: true
+
+services:
+  wings-init:
+    networks:
+      - wings_net
+  wings:
+    networks:
+      - wings_net
+      - pterodactyl_net

@@ -1,0 +1,23 @@
+# Override do painel para uso com Nginx Proxy Manager (Fase 3).
+# O painel expõe apenas 8080/8443; o NPM fica nas portas 80/443.
+#
+# 1. Crie a rede: docker network create proxy_net
+# 2. Suba o proxy: docker compose -f docker-compose-proxy.yml up -d
+# 3. Suba o painel com override: docker compose -f docker-compose-painel.yml -f docker-compose-painel.npm.yml up -d
+# 4. No NPM: Proxy Host → Forward Hostname: panel, Forward Port: 8080, domínio e SSL
+
+version: '3.8'
+
+networks:
+  proxy_net:
+    external: true
+
+services:
+  panel:
+    container_name: panel
+    ports:
+      - "8080:80"
+      - "8443:443"
+    networks:
+      - pterodactyl_net
+      - proxy_net
