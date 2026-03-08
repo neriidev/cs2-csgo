@@ -19,4 +19,4 @@ services:
       WINGS_UID: 988
       WINGS_GID: 988
       # Ative o debug se for a primeira instalação para ver erros de conexão
-      WINGS_DEBUG: "false"
+      WINGS_DEBUG: "true"
