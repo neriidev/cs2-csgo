@@ -20,6 +20,8 @@ Este tutorial ensina os **conceitos e passos** para rodar o projeto **cs2-csgo**
 - Repositório **ECR** para as imagens (ou use imagens públicas do Docker Hub/GHCR)
 - VPC com subnets públicas/privadas conforme a arquitetura
 
+Para uma lista completa (conta, ECR, ALB, Fargate vs EC2, Wings em EC2), veja **[00 – Pré-requisitos AWS](00-pre-requisitos-aws.md)**.
+
 ---
 
 ## Passo 1 – Criar o cluster ECS

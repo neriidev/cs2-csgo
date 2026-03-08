@@ -196,6 +196,14 @@ sudo chown -R 988:988 /var/lib/pterodactyl /run/wings/machine-id /tmp/pterodacty
 docker compose -f docker-compose-painel.yml up -d
 ```
 
+Para **volumes nomeados** (recomendado na AWS para persistência/backup):
+
+```bash
+docker compose -f docker-compose-painel.yml -f docker-compose-painel.aws.yml up -d
+```
+
+Para uso atrás de **ALB** (portas 8080/8443): use o override `docker-compose-painel.aws-alb.yml`. Ver **[docs/aws-docker-compose.md](aws-docker-compose.md)**.
+
 Depois de criar o node no painel e obter o token, configure o Wings (em `/etc/pterodactyl/config.yml` ou use o `wings-config/` do projeto) e suba o Wings. No Linux pode usar `docker-compose-wings.yml` (sem o override Windows).
 
 ### 2.6 Segurança e rede AWS

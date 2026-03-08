@@ -1,0 +1,14 @@
+# Override do painel para uso atrás de Application Load Balancer (ALB) na AWS.
+# O ALB termina SSL (ACM) e encaminha para a EC2; a EC2 não expõe 80/443.
+# Uso: docker compose -f docker-compose-painel.yml -f docker-compose-painel.aws-alb.yml up -d
+#
+# No ALB: Target Group → porta 8080 (HTTP); Health check path /api/health (ou /).
+# Security Group da EC2: permita tráfego na 8080 apenas do Security Group do ALB.
+
+version: '3.8'
+
+services:
+  panel:
+    ports:
+      - "8080:80"
+      - "8443:443"

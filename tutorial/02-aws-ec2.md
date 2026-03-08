@@ -18,6 +18,8 @@ Este tutorial ensina a **clonar** o projeto **cs2-csgo** e rodá-lo em **uma ou 
 - Conhecimento básico de **VPC**, **Security Groups** e **chave SSH**
 - (Opcional) Domínio e certificado SSL para HTTPS
 
+Para uma lista completa do que preparar (portas, Security Group, Docker, etc.), veja **[00 – Pré-requisitos AWS](00-pre-requisitos-aws.md)**.
+
 ---
 
 ## Arquitetura sugerida
@@ -219,10 +221,13 @@ Ajuste o `APP_URL` no `.env` para a URL HTTPS e reinicie o painel.
 |------|--------|
 | Conectar à EC2 | `ssh -i sua-chave.pem ec2-user@<IP>` |
 | Clonar projeto | `git clone <URL> cs2-csgo` → `cd cs2-csgo` |
-| Criar .env | `cp .env.example .env` → `nano .env` |
+| Criar .env | `cp .env.example .env` ou `cp .env.aws.example .env` → `nano .env` |
 | Criar dirs Wings | `sudo mkdir -p ...` e `sudo chown -R 988:988 ...` |
 | Subir painel | `docker compose -f docker-compose-painel.yml up -d` |
+| Subir painel (AWS, volumes nomeados) | `docker compose -f docker-compose-painel.yml -f docker-compose-painel.aws.yml up -d` |
 | Subir Wings | `docker compose -f docker-compose-wings.yml up -d` (conforme o projeto) |
+
+Para overrides específicos da AWS (volumes nomeados, uso com ALB), veja **[docs/aws-docker-compose.md](../docs/aws-docker-compose.md)**.
 
 ---
 

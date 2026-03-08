@@ -2,6 +2,7 @@
 
 Esta pasta contém guias passo a passo para:
 
+0. **Pré-requisitos para rodar na AWS** (EC2, ECS, EKS)
 1. **Clonar o projeto e configurar em outra máquina local** (Windows com Docker Desktop)
 2. **Configurar na AWS EC2** (instâncias Linux com Docker)
 3. **Configurar na AWS ECS** (Fargate/EC2 com ALB)
@@ -13,8 +14,10 @@ Esta pasta contém guias passo a passo para:
 
 | Tutorial | Descrição |
 |----------|-----------|
+| [00 – Pré-requisitos AWS](00-pre-requisitos-aws.md) | O que é necessário para rodar na AWS (EC2, ECS e EKS) |
 | [01 – Clonar e configurar local](01-clonar-e-configurar-local.md) | Clonar o repositório e rodar painel + Wings em outro PC Windows |
-| [02 – AWS EC2](02-aws-ec2.md) | Subir o stack em uma ou duas instâncias EC2 (Linux) |
+| [02 – AWS EC2 (Opção A)](02-aws-ec2.md) | Painel + Wings numa única instância EC2 (Linux) |
+| [02B – AWS EC2 (Opção B)](02b-aws-ec2-duas-instancias.md) | Duas instâncias EC2: painel numa, Wings noutra |
 | [03 – AWS ECS](03-aws-ecs.md) | Painel e Wings como tarefas ECS (Fargate + EC2 para Wings) |
 | [04 – AWS EKS](04-aws-eks.md) | Deploy no Kubernetes (EKS) com Ingress |
 
@@ -25,7 +28,7 @@ Esta pasta contém guias passo a passo para:
 - **Git** instalado
 - **Docker** e **Docker Compose** (v2+)
 - Para **local (Windows):** Docker Desktop com motor **WSL2**
-- Para **AWS:** conta AWS e, opcionalmente, AWS CLI configurado
+- Para **AWS:** consulte **[00 – Pré-requisitos AWS](00-pre-requisitos-aws.md)** (conta AWS, Security Groups, ECR, etc., conforme EC2, ECS ou EKS)
 
 ---
 

@@ -18,6 +18,8 @@ Este tutorial descreve os **conceitos e passos** para rodar o projeto **cs2-csgo
 - **Helm** (opcional, para empacotar o painel/DB/Redis)
 - Domínio (opcional) e certificado para o Ingress (ex.: ACM + Ingress Controller)
 
+Para uma lista completa (cluster EKS, node groups com Docker para o Wings, ECR, Ingress), veja **[00 – Pré-requisitos AWS](00-pre-requisitos-aws.md)**.
+
 ---
 
 ## Passo 1 – Criar o cluster EKS

@@ -1,0 +1,25 @@
+# Override do painel para AWS (EC2, etc.)
+# Usa volumes nomeados para persistência (recomendado para EBS/backup).
+# Uso: docker compose -f docker-compose-painel.yml -f docker-compose-painel.aws.yml up -d
+#
+# Na EC2: monte um EBS em /data e use este override; os volumes Docker ficam
+# em /var/lib/docker/volumes/ — para dados no EBS, configure o Docker data root
+# no EBS ou use o projeto em um path dentro do EBS (ex.: /data/cs2-csgo) e
+# faça backup de /var/lib/docker/volumes/ conforme a documentação.
+
+version: '3.8'
+
+volumes:
+  panel_db:
+    name: pterodactyl_panel_db
+  panel_var:
+    name: pterodactyl_panel_var
+
+services:
+  database:
+    volumes:
+      - panel_db:/var/lib/mysql
+
+  panel:
+    volumes:
+      - panel_var:/app/var/
